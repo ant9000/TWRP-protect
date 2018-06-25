@@ -66,10 +66,10 @@ if [ $status -ne 0 ]; then
 fi
 
 if [ -f AIK-Linux/ramdisk/twres/portrait.xml ]; then
-  perl -pe "s{<action function=\"set\">tw_unlock_pass=.+</action>}{<action function="set">tw_unlock_pass=$password</action>}" \
+  perl -pe "s{<action function=\"set\">tw_unlock_pass=.+</action>}{<action function=\"set\">tw_unlock_pass=$password</action>}" \
     downloads/portrait.xml | sudo tee AIK-Linux/ramdisk/twres/portrait.xml >/dev/null
 elif [ -f AIK-Linux/ramdisk/twres/landscape.xml ]; then
-  perl -pe "s{<action function=\"set\">tw_unlock_pass=.+</action>}{<action function="set">tw_unlock_pass=$password</action>}" \
+  perl -pe "s{<action function=\"set\">tw_unlock_pass=.+</action>}{<action function=\"set\">tw_unlock_pass=$password</action>}" \
     downloads/landscape.xml | sudo tee AIK-Linux/ramdisk/twres/landscape.xml >/dev/null
 else
   echo "The image '$twrp_image' does not look like a TWRP image."
