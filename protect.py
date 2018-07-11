@@ -68,6 +68,15 @@ password = ''
 while password == '':
     password = input('Password to be used in TWRP recovery: ')
 
+# Obtain sudo access, needed by AIK on Linux
+if plat == 'linux':
+    print("For unpacking/repacking the image, root rights are needed.")
+    try:
+        ret = subprocess.run(['sudo','-v'])
+    except Exception as e:
+        print("Error: {0}".format(e))
+        sys.exit(1)
+
 # Unpack image
 try:
     print('Unpacking image {0}.'.format(image_path))
@@ -125,7 +134,6 @@ except Exception as e:
 # Move protected image
 protected_path = image_path+'.protected'
 shutil.copy(os.path.join(aik['dir'],'image-new.img'),protected_path)
-print("Protected image available as '{0}'.".format(protected_path))
 
 # Cleanup
 try:
@@ -135,4 +143,12 @@ try:
         sys.exit(1)
 except Exception as e:
     print("Error: {0}".format(e))
-    sys.exit(1)
+
+if plat == 'linux':
+    print("Releasing root rights.")
+    try:
+        ret = subprocess.run(['sudo','-k'])
+    except Exception as e:
+        print("Error: {0}".format(e))
+
+print("Your protected image is '{0}'.".format(protected_path))
