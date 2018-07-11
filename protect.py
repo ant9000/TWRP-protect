@@ -71,7 +71,7 @@ while password == '':
 # Unpack image
 try:
     print('Unpacking image {0}.'.format(image_path))
-    ret = subprocess.run([aik['unpack'],image_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run([aik['unpack'],image_path])
     if ret.returncode < 0:
         print('Unpack image killed with signal {0}'.format(-ret.returncode))
         sys.exit(1)
@@ -96,25 +96,25 @@ for action in root.find("*/page[@name='clear_vars']/action").iter('action'):
         action.text = 'tw_unlock_pass=' + password
 ### requires root ON Linux
 if plat == 'linux':
-    ret = subprocess.run(['sudo','chmod','a+w',theme_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run(['sudo','chmod','a+w',theme_path])
 tree.write(theme_path)
 if plat == 'linux':
-    ret = subprocess.run(['sudo','chmod','go-w',theme_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run(['sudo','chmod','go-w',theme_path])
 
 # Activate secure adb
 default_prop_path = os.path.join(aik['dir'],'ramdisk','default.prop')
 prop = re.sub('^ro.adb.secure=0$', 'ro.adb.secure=1', open(default_prop_path).read(), flags=re.MULTILINE)
 ### requires root ON Linux
 if plat == 'linux':
-    ret = subprocess.run(['sudo','chmod','a+w',default_prop_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run(['sudo','chmod','a+w',default_prop_path])
 open(default_prop_path,'w').write(prop)
 if plat == 'linux':
-    ret = subprocess.run(['sudo','chmod','go-w',default_prop_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run(['sudo','chmod','go-w',default_prop_path])
 
 # Repack image
 try:
     print('Repacking image {0}.'.format(image_path))
-    ret = subprocess.run([aik['repack']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run([aik['repack']])
     if ret.returncode < 0:
         print('Repack image killed with signal {0}'.format(-ret.returncode))
         sys.exit(1)
@@ -129,7 +129,7 @@ print("Protected image available as '{0}'.".format(protected_path))
 
 # Cleanup
 try:
-    ret = subprocess.run([aik['clean']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    ret = subprocess.run([aik['clean']])
     if ret.returncode < 0:
         print('Clean killed with signal {0}'.format(-ret.returncode))
         sys.exit(1)
