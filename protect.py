@@ -40,6 +40,7 @@ if not aik:
 
 aik_path = 'downloads/%s' % aik['file']
 if not os.path.isfile(aik_path):
+    print('No AIK found, downloading it.')
     with open(aik_path,'wb') as f:
         with urllib.request.urlopen(aik['url']) as r:
             f.write(r.read())
@@ -50,6 +51,7 @@ for theme in ['portrait.xml', 'landscape.xml']:
     theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-8.1/gui/theme/common/%s' % theme
     theme_path = 'downloads/%s' % theme
     if not os.path.isfile(theme_path):
+        print('Downloading {0} with password support.'.format(theme))
         with open(theme_path,'wb') as f:
             with urllib.request.urlopen(theme_url) as r:
                 f.write(r.read())
@@ -68,6 +70,7 @@ while password == '':
 
 # Unpack image
 try:
+    print('Unpacking image {0}.'.format(image_path))
     ret = subprocess.run([aik['unpack'],image_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if ret.returncode < 0:
         print('Unpack image killed with signal {0}'.format(-ret.returncode))
@@ -110,6 +113,7 @@ if plat == 'linux':
 
 # Repack image
 try:
+    print('Repacking image {0}.'.format(image_path))
     ret = subprocess.run([aik['repack']], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if ret.returncode < 0:
         print('Repack image killed with signal {0}'.format(-ret.returncode))
@@ -119,7 +123,9 @@ except Exception as e:
     sys.exit(1)
 
 # Move protected image
-shutil.copy(os.path.join(aik['dir'],'image-new.img'),image_path+'.protected')
+protected_path = image_path+'.protected'
+shutil.copy(os.path.join(aik['dir'],'image-new.img'),protected_path)
+print("Protected image available as '{0}'.".format(protected_path))
 
 # Cleanup
 try:
