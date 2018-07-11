@@ -91,14 +91,22 @@ root = tree.getroot()
 for action in root.find("*/page[@name='clear_vars']/action").iter('action'):
     if action.text == 'tw_unlock_pass=0':
         action.text = 'tw_unlock_pass=' + password
-### TODO: requires root ON Linux
+### requires root ON Linux
+if plat == 'linux':
+    ret = subprocess.run(['sudo','chmod','a+w',theme_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 tree.write(theme_path)
+if plat == 'linux':
+    ret = subprocess.run(['sudo','chmod','go-w',theme_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # Activate secure adb
 default_prop_path = os.path.join(aik['dir'],'ramdisk','default.prop')
 prop = re.sub('^ro.adb.secure=0$', 'ro.adb.secure=1', open(default_prop_path).read(), flags=re.MULTILINE)
-### TODO: requires root ON Linux
-open(default_prop_path).write(prop)
+### requires root ON Linux
+if plat == 'linux':
+    ret = subprocess.run(['sudo','chmod','a+w',default_prop_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+open(default_prop_path,'w').write(prop)
+if plat == 'linux':
+    ret = subprocess.run(['sudo','chmod','go-w',default_prop_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
 # Repack image
 try:
