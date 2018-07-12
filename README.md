@@ -1,9 +1,13 @@
 # TWRP-protect
 Script to password protect a TWRP recovery image
 
-Usage:  ./protect.sh <recovery.img>
+Usage:  ./protect.py <recovery.img>
 
-Linux is required.
+Python3 is required.
+
+Tested on Linux only, but it should also work in Windows.
+
+Please report any issues you might find.
 
 ## CREDITS
 
