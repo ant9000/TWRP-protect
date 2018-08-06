@@ -16,16 +16,16 @@ if not os.path.isdir('downloads'):
 # Download Android Image Kitchen for the current platform
 AIK = {
     'win32': {
-        'file':   'Android.Image.Kitchen.v3.2-Win32.zip',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4452163&d=1521512064',
+        'file':   'Android.Image.Kitchen.v3.3-Win32.zip',
+        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4556233&d=1532348165',
         'dir':    'Android Image Kitchen',
         'unpack': 'Android Image Kitchen/unpackimg.bat',
         'repack': 'Android Image Kitchen/repackimg.bat',
         'clean':  'Android Image Kitchen/cleanup.bat',
     },
     'linux': {
-        'file':   'AIK-Linux-v3.2-ALL.tar.gz',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4452164&d=1521512064',
+        'file':   'AIK-Linux-v3.3-ALL.tar.gz',
+        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4556267&d=1532352640',
         'dir':    'AIK-Linux',
         'unpack': 'AIK-Linux/unpackimg.sh',
         'repack': 'AIK-Linux/repackimg.sh',
@@ -44,7 +44,11 @@ if not os.path.isfile(aik_path):
     with open(aik_path,'wb') as f:
         with urllib.request.urlopen(aik['url']) as r:
             f.write(r.read())
-    shutil.unpack_archive(aik_path)
+    try:
+        shutil.unpack_archive(aik_path)
+    except Exception as e:
+        print("Error: {0}".format(e))
+        sys.exit(1)
 
 # Download TWRP portrait.xml, landscape.xml
 for theme in ['portrait.xml', 'landscape.xml']:
@@ -59,7 +63,7 @@ for theme in ['portrait.xml', 'landscape.xml']:
 # Choose the TWRP image to password protect
 image_path = ''
 if len(sys.argv) > 1:
-    image_path = sys.argv[1]
+    image_path = os.path.join('.', sys.argv[1])
 while not os.path.isfile(image_path):
     image_path = input('Enter the TWRP recovery image that you want to protect: ')
 
