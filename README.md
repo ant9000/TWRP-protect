@@ -4,6 +4,7 @@ Script to password protect a TWRP recovery image
 Usage:
 
 [Linux]   ./protect.py <recovery.img>
+
 [Windows] python protect.py <recovery.img>
 
 Python3 is required.
