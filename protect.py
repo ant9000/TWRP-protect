@@ -16,16 +16,16 @@ if not os.path.isdir('downloads'):
 # Download Android Image Kitchen for the current platform
 AIK = {
     'win32': {
-        'file':   'Android.Image.Kitchen.v3.3-Win32.zip',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4556233&d=1532348165',
+        'file':   'Android.Image.Kitchen.v3.4-Win32.zip',
+        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4629276&d=1540766395',
         'dir':    'Android Image Kitchen',
         'unpack': 'Android Image Kitchen/unpackimg.bat',
         'repack': 'Android Image Kitchen/repackimg.bat',
         'clean':  'Android Image Kitchen/cleanup.bat',
     },
     'linux': {
-        'file':   'AIK-Linux-v3.3-ALL.tar.gz',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4556267&d=1532352640',
+        'file':   'AIK-Linux-v3.4-ALL.tar.gz',
+        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4629279&d=1540766441',
         'dir':    'AIK-Linux',
         'unpack': 'AIK-Linux/unpackimg.sh',
         'repack': 'AIK-Linux/repackimg.sh',
