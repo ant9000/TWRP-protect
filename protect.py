@@ -13,19 +13,23 @@ os.chdir(os.path.realpath(os.path.dirname(sys.argv[0])))
 if not os.path.isdir('downloads'):
     os.mkdir('downloads')
 
+def fetch(url):
+    req = urllib.request.Request(url)
+    req.add_header('User-Agent', 'Wget/1.18 (linux-gnu)')
+    return urllib.request.urlopen(req)
+
 # Download Android Image Kitchen for the current platform
 AIK = {
+    'URL':   'https://forum.xda-developers.com/showthread.php?t=2073775',
     'win32': {
-        'file':   'Android.Image.Kitchen.v3.4-Win32.zip',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4629276&d=1540766395',
+        'regex':  'Android\.Image\.Kitchen',
         'dir':    'Android Image Kitchen',
         'unpack': 'Android Image Kitchen/unpackimg.bat',
         'repack': 'Android Image Kitchen/repackimg.bat',
         'clean':  'Android Image Kitchen/cleanup.bat',
     },
     'linux': {
-        'file':   'AIK-Linux-v3.4-ALL.tar.gz',
-        'url':    'https://forum.xda-developers.com/attachment.php?attachmentid=4629279&d=1540766441',
+        'regex':  'AIK-Linux',
         'dir':    'AIK-Linux',
         'unpack': 'AIK-Linux/unpackimg.sh',
         'repack': 'AIK-Linux/repackimg.sh',
@@ -38,27 +42,45 @@ if not aik:
     print("No AIK available for '%s', sorry." % plat)
     sys.exit(1)
 
-aik_path = 'downloads/%s' % aik['file']
-if not os.path.isfile(aik_path):
-    print('No AIK found, downloading it.')
-    with open(aik_path,'wb') as f:
-        with urllib.request.urlopen(aik['url']) as r:
-            f.write(r.read())
-    try:
-        shutil.unpack_archive(aik_path)
-    except Exception as e:
-        print("Error: {0}".format(e))
-        sys.exit(1)
+try:
+    if not os.path.isdir(aik['dir']):
+        print('Finding AIK download url... ', end='', flush=True)
+        response = fetch(AIK['URL'])
+        html = str(response.read())
+        regex = '<a href="(http[^"]+)"[^>]*>({}[^<]+)<'.format(AIK[sys.platform]['regex'])
+        print('done.')
+        download = re.findall(regex, html)[0]
+        aik_url, aik_name = download
 
-# Download TWRP portrait.xml, landscape.xml
-for theme in ['portrait.xml', 'landscape.xml']:
-    theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-8.1/gui/theme/common/%s' % theme
-    theme_path = 'downloads/%s' % theme
-    if not os.path.isfile(theme_path):
-        print('Downloading {0} with password support.'.format(theme))
-        with open(theme_path,'wb') as f:
-            with urllib.request.urlopen(theme_url) as r:
-                f.write(r.read())
+        aik_path = 'downloads/%s' % aik_name
+        if not os.path.isfile(aik_path):
+            print('Downloading {}: '.format(aik_name), end='', flush=True)
+            with fetch(aik_url) as response:
+                with open(aik_path,'wb') as f:
+                    chunk = response.read(10240)
+                    while chunk:
+                        print('.', end='', flush=True)
+                        f.write(chunk)
+                        chunk = response.read(10240)
+                print('done')
+
+            print('Extracting archive... ', end='', flush=True)
+            shutil.unpack_archive(aik_path)
+            print('done.')
+
+    # Download TWRP portrait.xml, landscape.xml
+    for theme in ['portrait.xml', 'landscape.xml']:
+        theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-8.1/gui/theme/common/%s' % theme
+        theme_path = 'downloads/%s' % theme
+        if not os.path.isfile(theme_path):
+            print('Downloading {0} with password support.'.format(theme))
+            with open(theme_path,'wb') as f:
+                with fetch(theme_url) as r:
+                    f.write(r.read())
+
+except Exception as e:
+    print("Error: {0}".format(e))
+    sys.exit(1)
 
 # Choose the TWRP image to password protect
 image_path = ''
@@ -100,7 +122,7 @@ for theme in ['portrait.xml', 'landscape.xml']:
 if not os.path.isfile(theme_path):
     print("The image '{0}' does not look like a TWRP image.".format(image_path))
     sys.exit(1)
-    
+
 # Overwrite portrait.xml or landscape.xml
 tree = ET.parse('downloads/{0}'.format(os.path.basename(theme_path)))
 root = tree.getroot()
