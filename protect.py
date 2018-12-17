@@ -88,6 +88,7 @@ if len(sys.argv) > 1:
     image_path = os.path.join('.', sys.argv[1])
 while not os.path.isfile(image_path):
     image_path = input('Enter the TWRP recovery image that you want to protect: ')
+image_path = os.path.abspath(image_path)
 
 # Enter the desired password
 password = ''
