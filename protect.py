@@ -72,11 +72,10 @@ try:
     for theme in ['portrait.xml', 'landscape.xml']:
         theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-8.1/gui/theme/common/%s' % theme
         theme_path = 'downloads/%s' % theme
-        if not os.path.isfile(theme_path):
-            print('Downloading {0} with password support.'.format(theme))
-            with open(theme_path,'wb') as f:
-                with fetch(theme_url) as r:
-                    f.write(r.read())
+        print('Downloading {0} with password support.'.format(theme))
+        with open(theme_path,'wb') as f:
+            with fetch(theme_url) as r:
+                f.write(r.read())
 
 except Exception as e:
     print("Error: {0}".format(e))
