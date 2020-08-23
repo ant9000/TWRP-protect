@@ -70,7 +70,7 @@ try:
 
     # Download TWRP portrait.xml, landscape.xml
     for theme in ['portrait.xml', 'landscape.xml']:
-        theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-9.0/gui/theme/common/%s' % theme
+        theme_url  = 'https://raw.githubusercontent.com/ant9000/android_bootable_recovery/android-9.0-password/gui/theme/common/%s' % theme
         theme_path = 'downloads/%s' % theme
         print('Downloading {0} with password support.'.format(theme))
         with open(theme_path,'wb') as f:
